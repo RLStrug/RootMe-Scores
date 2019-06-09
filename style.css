@@ -1,0 +1,36 @@
+html,body{
+  background:#eee;
+  width:100%;
+  height:100%;
+}
+body.loading{
+  cursor:wait;
+}
+body.loading *{
+  display:none;
+}
+td,th{
+  padding:1ex 1em;
+}
+th{
+  background:gray;
+}
+tr{
+  background:white;
+}
+tr.first{
+  background:gold;
+}
+tr.second{
+  background:silver;
+}
+tr.third{
+  background:chocolate;
+}
+#nbval{
+  text-decoration:underline dotted;
+  cursor:help;
+}
+#nbval:hover{
+  text-decoration:none;
+}
