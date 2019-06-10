@@ -1,10 +1,13 @@
 "use strict";
 
-const teams = {}, challenges = {}, challengesWorth = {}, teamsScore = {};
+let teams = {}, challenges = {}, challengesWorth = {}, teamsScore = {};
 
 window.addEventListener("load", main);
 
 function main(){
+  if (localStorage.getItem("f") !== null){
+    restoreScore();
+  }
   for (let c of challengeCategories){
     challenges[c] = {};
   }
@@ -46,7 +49,20 @@ function storeScore(webpage){
   }
 }
 
-function computeScore(/*unused*/){
+function restoreScore(){
+  teams = JSON.parse(localStorage.getItem("teams"));
+  challenges = JSON.parse(localStorage.getItem("challenges"));
+  challengesWorth = JSON.parse(localStorage.getItem("challengesWorth"));
+  teamsScore = JSON.parse(localStorage.getItem("teamsScore"));
+
+  displayScores();
+  displayChallenges();
+  document.body.classList.remove("loading");
+
+  teams = {}, challenges = {}, challengesWorth = {}, teamsScore = {};
+}
+
+function computeScore(){
   let worth = [];
   for (let i = 0; i <= teamNames.length; ++i){
     if (i <= teamNames.length*0.1)
@@ -71,9 +87,26 @@ function computeScore(/*unused*/){
       teamsScore[t] += challengesWorth[c];
     }
   }
+  document.body.classList.add("loading");
   displayScores();
   displayChallenges();
   document.body.classList.remove("loading");
+
+  localStorage.setItem("teams", JSON.stringify(teams));
+  localStorage.setItem("challenges", JSON.stringify(challenges));
+  localStorage.setItem("challengesWorth", JSON.stringify(challengesWorth));
+  localStorage.setItem("teamsScore", JSON.stringify(teamsScore));
+  localStorage.setItem("f", "");
+}
+
+function clearTable(table){
+  console.log(table);
+  let element = table.firstElementChild;
+  while (element !== null){
+    const nextElement = element.nextElementSibling;
+    table.removeChild(element);
+    element = nextElement;
+  }
 }
 
 function displayScores(){
@@ -85,6 +118,7 @@ function displayScores(){
     return teamsScore[b] - teamsScore[a];
   });
   let teamsTbodyTag = document.getElementById("teams").children[1];
+  clearTable(teamsTbodyTag);
   for (let n of names){
     let teamTrtag = document.createElement("tr");
 
@@ -109,6 +143,7 @@ function displayScores(){
 
 function displayChallenges(){
   let challTbodytag = document.getElementById("challenges").children[1];
+  clearTable(challTbodytag);
   for (let cat of challengeCategories){
     let catThTag = document.createElement("th");
     catThTag.textContent = cat;
