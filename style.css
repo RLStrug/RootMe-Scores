@@ -9,6 +9,9 @@ body.loading{
 body.loading *{
   display:none;
 }
+body.loading2{
+  cursor:progress;
+}
 td,th{
   padding:1ex 1em;
 }

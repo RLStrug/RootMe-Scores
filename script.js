@@ -58,6 +58,7 @@ function restoreScore(){
   displayScores();
   displayChallenges();
   document.body.classList.remove("loading");
+  document.body.classList.add("loading2");
 
   teams = {}, challenges = {}, challengesWorth = {}, teamsScore = {};
 }
@@ -91,6 +92,7 @@ function computeScore(){
   displayScores();
   displayChallenges();
   document.body.classList.remove("loading");
+  document.body.classList.remove("loading2");
 
   localStorage.setItem("teams", JSON.stringify(teams));
   localStorage.setItem("challenges", JSON.stringify(challenges));
