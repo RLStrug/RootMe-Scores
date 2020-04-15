@@ -4,7 +4,7 @@ let teams = {}, challenges = {}, challengesWorth = {}, teamsScore = {};
 
 window.addEventListener("load", main);
 
-function main(){
+async function main(){
   if (localStorage.getItem("f") !== null){
     restoreScore();
   }
@@ -13,28 +13,27 @@ function main(){
   }
   let requests = [];
   for (let name of teamNames){
-    let r = fetchScore(name);
+    let r = await fetchScore(name); // One request at a time because current proxy is too slow
     requests.push(r);
   }
   Promise.all(requests).then(computeScore).catch(console.error);
 }
 
 function fetchScore(name){
-  const proxy = "https://cors.io/?";
-  // const proxy = "https://crossorigin.me/";
   const url = `https://www.root-me.org/${name}?inc=score&lang=fr`;
   return new Promise((resolve, reject)=>{
     fetch(proxy+url)
-      .then(res=>res.text()
+      .then(res=>{console.log(res); res.text()
         .then(txt=>{storeScore(txt); resolve(1);})
-        .catch(err=>{console.error(err); reject(err);}))
+        .catch(err=>{console.error(err); reject(err);})})
       .catch(err=>{console.error(err); reject(err);});
   });
 }
 
 function storeScore(webpage){
-  const reUsername = /<span class=" forum" >.*<\/span>/;
-  const username = reUsername.exec(webpage)[0].slice(22,-7);
+  const reUsername = /<meta name="author" content=".*"\/>/;
+  console.log(reUsername.exec(webpage));
+  const username = reUsername.exec(webpage)[0].slice(29,-3);
   teams[username] = [];
   const mainTag = webpage.slice(webpage.indexOf("<main"));
   for (let c of challengeCategories){
